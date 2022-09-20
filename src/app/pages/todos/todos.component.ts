@@ -52,7 +52,13 @@ export class TodosComponent implements OnInit {
   }
 
   searchChange() {
-    this.state$ = this.todosStateService.searchTodos(this.search.value);
+    this.state$ = this.todosStateService.searchTodos(this.search.value).pipe(
+      tap((state) => {
+        this.pageChanged({
+          page: 1,
+          itemsPerPage: 10,
+        }, state.todos)
+      }));
   }
 
   pageChanged($event: PageChangedEvent, todos: Todo[]) {
