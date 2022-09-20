@@ -1,0 +1,52 @@
+<input type="text" class="form-control" placeholder="search" [formControl]="search" (ngModelChange)="searchChange()"/>
+<ng-template let-state [ngIf]="state$ | async">
+  <table>
+    <thead>
+      <tr>
+        <th colspan="4">
+          <button (click)="openModal()">create</button>
+        </th>
+      </tr>
+    </thead>
+    <thead>
+    <tr>
+      <th>
+        ID
+      </th>
+      <th>
+        Title
+      </th>
+      <th>
+        Creator
+      </th>
+      <th>
+        Completed
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let todo of pagedTodos" [class.completed]="todo.completed" (click)="openModal(todo)">
+      <td>
+        {{todo.id}}
+      </td>
+      <td>
+        {{todo.title}}
+      </td>
+      <td>
+        {{todo.user.name}}
+      </td>
+      <td>
+        {{todo.completed | completed}}
+      </td>
+    </tr>
+    </tbody>
+    <tfoot>
+    <tr>
+      <td colspan="4">
+        <pagination [totalItems]="state.todos.length" [itemsPerPage]="10" [(ngModel)]="currentPage"
+                    (pageChanged)="pageChanged($event, state.todos)"></pagination>
+      </td>
+    </tr>
+    </tfoot>
+  </table>
+</ng-template>

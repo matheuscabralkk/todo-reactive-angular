@@ -1,0 +1,7 @@
+.completed td:not(:last-child) {
+  text-decoration: line-through;
+}
+
+tbody tr {
+  cursor: pointer;
+}

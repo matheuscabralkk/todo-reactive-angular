@@ -1,0 +1,23 @@
+<div class="modal-header">
+  <h4 class="modal-title pull-left">Modal</h4>
+  <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="closeModal()">
+    <span aria-hidden="true" class="visually-hidden">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="createTodoForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="creator">Name</label>
+      <input type="text" class="form-control" id="creator" formControlName="creator" placeholder="Enter creator name">
+    </div>
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input type="text" class="form-control" id="title" formControlName="title" placeholder="Enter title">
+    </div>
+    <div class="form-group">
+      <label for="completed">Completed</label>
+      <input type="checkbox" class="form-check" id="completed" formControlName="completed"/>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
