@@ -25,7 +25,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let todo of pagedTodos" [class.completed]="todo.completed" (click)="openModal(todo)">
+    <tr *ngFor="let todo of state.pagedTodos" [class.completed]="todo.completed" (click)="openModal(todo)">
       <td>
         {{todo.id}}
       </td>
@@ -43,8 +43,8 @@
     <tfoot>
     <tr>
       <td colspan="4">
-        <pagination [totalItems]="state.todos.length" [itemsPerPage]="10" [(ngModel)]="currentPage"
-                    (pageChanged)="pageChanged($event, state.todos)"></pagination>
+        <pagination [totalItems]="state.todos.length" [itemsPerPage]="itemsPerPage" [(ngModel)]="currentPage"
+                    (pageChanged)="state$ = pageChanged($event, state.todos)"></pagination>
       </td>
     </tr>
     </tfoot>

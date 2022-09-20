@@ -1,5 +1,5 @@
 import {Component, OnInit, TemplateRef} from '@angular/core';
-import {Observable, take, tap} from "rxjs";
+import {map, Observable, of, switchMap, take, tap} from "rxjs";
 import {TodosStateService} from "./todos-state.service";
 import {TodosState} from "./types";
 import {FormControl} from "@angular/forms";
@@ -23,7 +23,7 @@ export class TodosComponent implements OnInit {
 
   public currentPage = 1;
 
-  public pagedTodos: Todo[] | undefined;
+  public itemsPerPage = 10;
 
   constructor(
     private readonly todosStateService: TodosStateService,
@@ -33,12 +33,12 @@ export class TodosComponent implements OnInit {
 
   ngOnInit(): void {
     this.state$ = this.todosStateService.state$.pipe(
-      tap((state) => {
+      switchMap((state) =>
         this.pageChanged({
           page: 1,
-          itemsPerPage: 10,
+          itemsPerPage: this.itemsPerPage,
         }, state.todos)
-      })
+      )
     );
   }
 
@@ -53,18 +53,22 @@ export class TodosComponent implements OnInit {
 
   searchChange() {
     this.state$ = this.todosStateService.searchTodos(this.search.value).pipe(
-      tap((state) => {
+      switchMap((state) =>
         this.pageChanged({
           page: 1,
-          itemsPerPage: 10,
+          itemsPerPage: this.itemsPerPage,
         }, state.todos)
-      }));
+      ));
   }
 
-  pageChanged($event: PageChangedEvent, todos: Todo[]) {
+  pageChanged($event: PageChangedEvent, todos: Todo[]): Observable<TodosState> {
     const startItem = ($event.page - 1) * $event.itemsPerPage;
     const endItem = $event.page * $event.itemsPerPage;
-    this.pagedTodos = todos.slice(startItem, endItem);
+    const pagedTodos = todos.slice(startItem, endItem);
+    return of({
+      todos,
+      pagedTodos
+    })
   }
 
   private addTodo(newTodo: any) {
