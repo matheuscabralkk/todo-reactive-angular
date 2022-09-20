@@ -1,13 +1,9 @@
-<input type="text" class="form-control" placeholder="search" [formControl]="search" (ngModelChange)="searchChange()"/>
 <ng-template let-state [ngIf]="state$ | async">
+  <div [formGroup]="state.form" style="display: grid; grid-template-columns: 200px auto; width: 500px;">
+    <button style="margin: 10px;" class="btn btn-primary" (click)="openModal()">create</button>
+    <input style="margin: 10px;" type="text" class="form-control" placeholder="search" formControlName="search"/>
+  </div>
   <table>
-    <thead>
-      <tr>
-        <th colspan="4">
-          <button (click)="openModal()">create</button>
-        </th>
-      </tr>
-    </thead>
     <thead>
     <tr>
       <th>
@@ -44,7 +40,7 @@
     <tr>
       <td colspan="4">
         <pagination [totalItems]="state.todos.length" [itemsPerPage]="itemsPerPage" [(ngModel)]="currentPage"
-                    (pageChanged)="state$ = pageChanged($event, state.todos)"></pagination>
+                    (pageChanged)="pageChanged($event)"></pagination>
       </td>
     </tr>
     </tfoot>

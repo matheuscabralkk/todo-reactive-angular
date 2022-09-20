@@ -1,4 +1,4 @@
-import {Component, OnInit, TemplateRef} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, TemplateRef} from '@angular/core';
 import {map, Observable, of, switchMap, take, tap} from "rxjs";
 import {TodosStateService} from "./todos-state.service";
 import {TodosState} from "./types";
@@ -14,6 +14,7 @@ import {User} from "../../models/user";
   templateUrl: './todos.component.html',
   styleUrls: ['./todos.component.scss'],
   providers: [TodosStateService],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TodosComponent implements OnInit {
 
@@ -32,14 +33,7 @@ export class TodosComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.state$ = this.todosStateService.state$.pipe(
-      switchMap((state) =>
-        this.pageChanged({
-          page: 1,
-          itemsPerPage: this.itemsPerPage,
-        }, state.todos)
-      )
-    );
+    this.state$ = this.todosStateService.state$;
   }
 
   openModal(todo?: Todo) {
@@ -51,28 +45,14 @@ export class TodosComponent implements OnInit {
 
   }
 
-  searchChange() {
-    this.state$ = this.todosStateService.searchTodos(this.search.value).pipe(
-      switchMap((state) =>
-        this.pageChanged({
-          page: 1,
-          itemsPerPage: this.itemsPerPage,
-        }, state.todos)
-      ));
-  }
 
-  pageChanged($event: PageChangedEvent, todos: Todo[]): Observable<TodosState> {
-    const startItem = ($event.page - 1) * $event.itemsPerPage;
-    const endItem = $event.page * $event.itemsPerPage;
-    const pagedTodos = todos.slice(startItem, endItem);
-    return of({
-      todos,
-      pagedTodos
-    })
+  pageChanged($event: PageChangedEvent) {
+    this.todosStateService.currentPage$.next($event.page);
   }
 
   private addTodo(newTodo: any) {
     console.log('handle callback from todos.component.ts: ', newTodo)
     // demo add
   }
+
 }
