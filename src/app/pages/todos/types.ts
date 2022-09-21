@@ -8,7 +8,7 @@ export type TodosState = {
   currentPage: number;
 }
 
-export type newTodoDialogDTO = {
+export type NewTodoDialogDTO = {
   creator: string;
   completed: boolean;
   title: string;

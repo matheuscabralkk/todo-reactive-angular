@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import {Observable} from "rxjs";
-import {Todo} from "../../models/todo";
 import {User} from "../../models/user";
 import {HttpClient} from "@angular/common/http";
 
@@ -17,5 +16,13 @@ export class UserService {
 
   public getUserById(userId: number): Observable<User> {
     return this.httpClient.get<User>(`${this.baseUrl}${userId}`);
+  }
+
+  public getAll(): Observable<User[]> {
+    return this.httpClient.get<User[]>(`${this.baseUrl}`);
+  }
+
+  public getBySearch(str: string): Observable<User[]> {
+    return this.httpClient.get<User[]>(`${this.baseUrl}?q=${str}`);
   }
 }

@@ -10,7 +10,7 @@ import {
   tap,
   withLatestFrom
 } from "rxjs";
-import {newTodoDialogDTO, TodosState} from "./types";
+import {NewTodoDialogDTO, TodosState} from "./types";
 import {Todo} from "../../models/todo";
 import {TodoService} from "../../services/todo/todo.service";
 import {UserService} from "../../services/user/user.service";
@@ -105,7 +105,7 @@ export class TodosStateService {
     )
   }
 
-  editTodos({title, completed, creator, editMode, todoId, userId}: newTodoDialogDTO) {
+  editTodos({title, completed, creator, editMode, todoId, userId}: NewTodoDialogDTO) {
     const newTodo: Todo = {
       userId: userId,
       id: todoId,

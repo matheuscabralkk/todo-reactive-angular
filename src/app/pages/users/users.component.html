@@ -1,0 +1,45 @@
+<ng-template let-state [ngIf]="state$ | async">
+  <div [formGroup]="state.form" style="display: grid; grid-template-columns: 200px auto; width: 100%;">
+    <button style="margin: 10px;" class="btn btn-primary" (click)="openModal()">create</button>
+    <input style="margin: 10px;" type="text" class="form-control" placeholder="search" formControlName="search"/>
+  </div>
+  <table style="width: 100%;">
+    <thead>
+    <tr>
+      <th>
+        ID
+      </th>
+      <th>
+        Name
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let todo of state.pagedUsers" (click)="openModal(todo)">
+      <td>
+        {{todo.id}}
+      </td>
+      <td>
+        {{todo.name}}
+      </td>
+      <td>
+        {{todo.username}}
+      </td>
+      <td>
+        {{todo.email}}
+      </td>
+      <td>
+        <button style="margin: 10px;" class="btn btn-primary" (click)="seeAddressModal()">See Address</button>
+      </td>
+    </tr>
+    </tbody>
+    <tfoot>
+    <tr>
+      <td colspan="4">
+        <pagination [totalItems]="state.users.length" [itemsPerPage]="itemsPerPage" [(ngModel)]="state.currentPage"
+                    (pageChanged)="pageChanged($event)"></pagination>
+      </td>
+    </tr>
+    </tfoot>
+  </table>
+</ng-template>

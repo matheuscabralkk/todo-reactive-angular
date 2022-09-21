@@ -6,17 +6,19 @@ import {AppComponent} from './app.component';
 import {HttpClientModule} from "@angular/common/http";
 import {TodosModule} from "./pages/todos/todos.module";
 import {ModalModule} from "ngx-bootstrap/modal";
+import {UsersModule} from "./pages/users/users.module";
 
 @NgModule({
   declarations: [
-    AppComponent,
+    AppComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     ModalModule.forRoot(),
-    TodosModule
+    TodosModule,
+    UsersModule
   ],
   providers: [],
   bootstrap: [AppComponent]

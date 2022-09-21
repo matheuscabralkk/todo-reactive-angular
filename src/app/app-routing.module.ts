@@ -1,6 +1,5 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {TodosComponent} from "./pages/todos/todos.component";
 
 const routes: Routes = [
   {
@@ -10,7 +9,12 @@ const routes: Routes = [
   },
   {
     path: 'todos',
-    loadChildren: () => import('./pages/todos/todos.module').then(m => m.TodosModule)}
+    loadChildren: () => import('./pages/todos/todos.module').then(m => m.TodosModule)
+  },
+  {
+    path: 'users',
+    loadChildren: () => import('./pages/users/users.module').then(m => m.UsersModule)
+  }
 ];
 
 @NgModule({

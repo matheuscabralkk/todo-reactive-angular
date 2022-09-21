@@ -1,13 +1,13 @@
 import {ChangeDetectionStrategy, Component, OnInit, TemplateRef} from '@angular/core';
 import {map, Observable, of, switchMap, take, tap} from "rxjs";
 import {TodosStateService} from "./todos-state.service";
-import {newTodoDialogDTO, TodosState} from "./types";
+import {NewTodoDialogDTO, TodosState} from "./types";
 import {FormControl} from "@angular/forms";
 import {PageChangedEvent} from "ngx-bootstrap/pagination";
 import {Todo} from "../../models/todo";
 import {BsModalRef, BsModalService} from "ngx-bootstrap/modal";
 import {TodoModalComponent} from "../../modals/todo-modal/todo-modal.component";
-import {User} from "../../models/user";
+import {NewUserDialogDTO} from "../users/types";
 
 @Component({
   selector: 'app-todos',
@@ -35,10 +35,13 @@ export class TodosComponent implements OnInit {
   openModal(todo?: Todo) {
     this.modalService.show(TodoModalComponent, {id: 1, class: 'modal-lg', initialState: {todo}});
     this.modalService.onHide.pipe(take(1))
-      .subscribe((res: newTodoDialogDTO) => {
-        this.todosStateService.editTodos(res);
+      .subscribe((res?: unknown) => {
+        if (!!res && typeof res === 'string' && res.includes('creator')) {
+          const todoDTO: NewTodoDialogDTO = JSON.parse(res);
+          console.log(todoDTO);
+          this.todosStateService.editTodos(todoDTO);
+        }
       });
-
   }
 
   pageChanged($event: PageChangedEvent) {

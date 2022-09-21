@@ -1,0 +1,69 @@
+<form [formGroup]="getForm" (ngSubmit)="onSubmit()">
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" class="form-control" id="name" formControlName="name" placeholder="Enter user name">
+    <div class="form-error" *ngIf="getForm.get('name')?.dirty && getForm.get('name')?.errors?.['required']">
+      Required!
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="username">Username</label>
+    <input type="text" class="form-control" id="username" formControlName="username" placeholder="Enter Username">
+    <div class="form-error" *ngIf="getForm.get('username')?.dirty && getForm.get('username')?.errors?.['required']">
+      Required!
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input type="text" class="form-control" id="email" formControlName="email" placeholder="Enter user Email">
+    <div class="form-error" *ngIf="getForm.get('email')?.dirty && getForm.get('email')?.errors?.['required']">
+      Required!
+    </div>
+  </div>
+
+  <!--adress-->
+  <div class="form-group">
+    <label for="street">Street</label>
+    <input type="text" class="form-control" id="street" formControlName="street" placeholder="Enter user street">
+    <div class="form-error" *ngIf="getForm.get('street')?.dirty && getForm.get('street')?.errors?.['required']">
+      Required!
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="suite">Suite</label>
+    <input type="text" class="form-control" id="suite" formControlName="suite" placeholder="Enter user suite">
+    <div class="form-error" *ngIf="getForm.get('suite')?.dirty && getForm.get('suite')?.errors?.['required']">
+      Required!
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="city">City</label>
+    <input type="text" class="form-control" id="city" formControlName="city" placeholder="Enter user city">
+    <div class="form-error" *ngIf="getForm.get('city')?.dirty && getForm.get('city')?.errors?.['required']">
+      Required!
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="zipcode">Zipcode</label>
+    <input type="text" class="form-control" id="zipcode" formControlName="zipcode" placeholder="Enter user zipcode">
+    <div class="form-error" *ngIf="getForm.get('zipcode')?.dirty && getForm.get('zipcode')?.errors?.['required']">
+      Required!
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="lat">Lat</label>
+    <input type="number" class="form-control" id="lat" formControlName="lat" placeholder="Enter user lat">
+    <div class="form-error" *ngIf="getForm.get('lat')?.dirty && getForm.get('lat')?.errors?.['required']">
+      Required!
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="lng">Lng</label>
+    <input type="number" class="form-control" id="lng" formControlName="lng" placeholder="Enter user lng">
+    <div class="form-error" *ngIf="getForm.get('lng')?.dirty && getForm.get('lng')?.errors?.['required']">
+      Required!
+    </div>
+  </div>
+
+  <button type="submit" [disabled]="getForm.invalid" class="btn btn-primary">Submit</button>
+</form>

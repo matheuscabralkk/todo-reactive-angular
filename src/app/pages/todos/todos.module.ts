@@ -23,7 +23,6 @@ import {TodoFormComponent} from "../../components/todo-form/todo-form.component"
     ReactiveFormsModule,
     PaginationModule,
     FormsModule
-  ],
-  providers: []
+  ]
 })
 export class TodosModule { }
