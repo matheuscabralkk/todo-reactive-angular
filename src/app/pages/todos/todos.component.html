@@ -39,7 +39,7 @@
     <tfoot>
     <tr>
       <td colspan="4">
-        <pagination [totalItems]="state.todos.length" [itemsPerPage]="itemsPerPage" [(ngModel)]="currentPage"
+        <pagination [totalItems]="state.todos.length" [itemsPerPage]="itemsPerPage" [(ngModel)]="state.currentPage"
                     (pageChanged)="pageChanged($event)"></pagination>
       </td>
     </tr>

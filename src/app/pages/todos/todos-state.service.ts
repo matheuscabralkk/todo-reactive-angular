@@ -6,7 +6,7 @@ import {
   map,
   mergeMap,
   Observable,
-  of, switchMap,
+  of, switchMap, take,
   tap,
   withLatestFrom
 } from "rxjs";
@@ -23,25 +23,37 @@ export class TodosStateService {
 
   public currentPage$ = new BehaviorSubject<number>(1);
 
-  public currentPageTodosSubject = new BehaviorSubject<Todo[]>([]);
+  public todosSubject = new BehaviorSubject<Todo[]>([]);
+
+  public pagedTodosSubject = new BehaviorSubject<Todo[]>([]);
 
   public form = new FormGroup({
     search: new FormControl('')
   })
 
+  public readonly itemsPerPage = 10;
+
   constructor(
     private readonly todosService: TodoService,
     private readonly userService: UserService
   ) {
-    this.state$ = combineLatest([this.todos, this.currentPageTodosSubject]).pipe(
-      map(([todos, pagedTodos]) => ({
+    this.state$ = combineLatest([this.todosSubject, this.pagedTodosSubject, this.currentPage$]).pipe(
+      map(([todos, pagedTodos, currentPage]) => ({
         todos,
         pagedTodos,
+        currentPage,
         form: this.form
       }))
     );
     this.currentPageWatcher().subscribe()
     this.filterWatcher().subscribe()
+
+    this.todos.pipe(
+      tap((todos) => {
+        this.todosSubject.next(todos);
+        this.currentPage$.next(1);
+      })
+    ).subscribe();
   }
 
   public searchTodos(str: string): Observable<Todo[]> {
@@ -54,7 +66,6 @@ export class TodosStateService {
           })),
         ))),
       ),
-      tap((todos) => this.currentPageTodosSubject.next(todos))
     );
   }
 
@@ -67,27 +78,30 @@ export class TodosStateService {
             user
           }))
         )))
-      ),
-      tap(() => this.currentPage$.next(1))
+      )
     );
   }
 
   private currentPageWatcher() {
     return this.currentPage$.pipe(
-      withLatestFrom(this.todos),
-      tap(([currentPage, todos]) => {
-        console.log('currentPageWatcher: ', currentPage, todos)
-        const startItem = (currentPage - 1) * 10;
-        const endItem = currentPage * 10;
+      withLatestFrom(this.state$),
+      tap(([currentPage, {todos}]) => {
+        const startItem = (currentPage - 1) * this.itemsPerPage;
+        const endItem = currentPage * this.itemsPerPage;
         const pagedTodos = todos.slice(startItem, endItem);
-        this.currentPageTodosSubject.next(pagedTodos);
+        this.pagedTodosSubject.next(pagedTodos);
     }));
   }
 
   private filterWatcher() {
     return this.form.get('search')!.valueChanges.pipe(
       debounceTime(500),
-      switchMap((res) => this.searchTodos(res))
+      switchMap((res) => this.searchTodos(res)),
+      tap((todos) => {
+        this.todosSubject.next(todos);
+        this.pagedTodosSubject.next(todos.slice(0, this.itemsPerPage));
+        this.currentPage$.next(1);
+      })
     )
   }
 }

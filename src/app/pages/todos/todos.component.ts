@@ -22,10 +22,6 @@ export class TodosComponent implements OnInit {
 
   public search = new FormControl();
 
-  public currentPage = 1;
-
-  public itemsPerPage = 10;
-
   constructor(
     private readonly todosStateService: TodosStateService,
     private readonly modalService: BsModalService
@@ -45,9 +41,12 @@ export class TodosComponent implements OnInit {
 
   }
 
-
   pageChanged($event: PageChangedEvent) {
     this.todosStateService.currentPage$.next($event.page);
+  }
+
+  get itemsPerPage(): number {
+    return this.todosStateService.itemsPerPage;
   }
 
   private addTodo(newTodo: any) {

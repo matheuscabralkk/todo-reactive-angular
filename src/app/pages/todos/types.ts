@@ -5,4 +5,5 @@ export type TodosState = {
   todos: Todo[];
   pagedTodos: Todo[];
   form: FormGroup;
+  currentPage: number;
 }
