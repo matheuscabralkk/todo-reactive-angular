@@ -23,6 +23,8 @@ export class TodosStateService {
 
   public currentPage$ = new BehaviorSubject<number>(1);
 
+  public loading$ = new BehaviorSubject<boolean>(true);
+
   public todosSubject = new BehaviorSubject<Todo[]>([]);
 
   public pagedTodosSubject = new BehaviorSubject<Todo[]>([]);
@@ -52,11 +54,13 @@ export class TodosStateService {
       tap((todos) => {
         this.todosSubject.next(todos);
         this.currentPage$.next(1);
+        this.loading$.next(false);
       })
     ).subscribe();
   }
 
   public searchTodos(str: string): Observable<Todo[]> {
+    this.loading$.next(true)
     return this.todosService.getBySearch(str).pipe(
       mergeMap((todos) =>
         combineLatest(todos.map((todo) => this.userService.getUserById(todo.userId).pipe(
@@ -66,6 +70,7 @@ export class TodosStateService {
           })),
         ))),
       ),
+      tap(() => this.loading$.next(false))
     );
   }
 

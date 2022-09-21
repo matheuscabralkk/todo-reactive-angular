@@ -44,6 +44,10 @@ export class TodosComponent implements OnInit {
       });
   }
 
+  get isLoading() {
+    return this.todosStateService.loading$;
+  }
+
   pageChanged($event: PageChangedEvent) {
     this.todosStateService.currentPage$.next($event.page);
   }
