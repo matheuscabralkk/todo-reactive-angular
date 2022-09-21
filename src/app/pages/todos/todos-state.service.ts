@@ -10,7 +10,7 @@ import {
   tap,
   withLatestFrom
 } from "rxjs";
-import {TodosState} from "./types";
+import {newTodoDialogDTO, TodosState} from "./types";
 import {Todo} from "../../models/todo";
 import {TodoService} from "../../services/todo/todo.service";
 import {UserService} from "../../services/user/user.service";
@@ -90,7 +90,7 @@ export class TodosStateService {
         const endItem = currentPage * this.itemsPerPage;
         const pagedTodos = todos.slice(startItem, endItem);
         this.pagedTodosSubject.next(pagedTodos);
-    }));
+      }));
   }
 
   private filterWatcher() {
@@ -103,5 +103,35 @@ export class TodosStateService {
         this.currentPage$.next(1);
       })
     )
+  }
+
+  editTodos({title, completed, creator, editMode, todoId, userId}: newTodoDialogDTO) {
+    const newTodo: Todo = {
+      userId: userId,
+      id: todoId,
+      title: title,
+      completed: completed,
+      user: {
+        id: userId,
+        name: creator,
+      }
+    }
+
+    this.todosSubject.pipe(
+      take(1),
+      tap((todos) => {
+          if (!editMode) {
+            this.todosSubject.next([newTodo, ...todos]);
+            this.pagedTodosSubject.next([newTodo, ...todos]);
+            this.currentPage$.next(1);
+          } else {
+            const todoToEditIndex = todos.findIndex((todo) => todo.id === newTodo.id);
+            todos[todoToEditIndex] = newTodo;
+            this.todosSubject.next([...todos]);
+            this.pagedTodosSubject.next([...todos]);
+            this.currentPage$.next(1);
+          }
+        }
+      )).subscribe();
   }
 }

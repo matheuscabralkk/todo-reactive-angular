@@ -40,7 +40,13 @@ export class TodoModalComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.modalService.setDismissReason(this.createTodoForm.value);
+    const randomId = Math.floor(Math.random() * 100000) + 200;
+    this.modalService.setDismissReason({
+      editMode: !!this.todo,
+      userId: this.todo?.user.id || randomId,
+      todoId: this.todo?.id || randomId,
+      ...this.createTodoForm.value
+    });
     this.createTodoForm.reset();
     this.modalService.hide();
   }

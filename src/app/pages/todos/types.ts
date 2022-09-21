@@ -7,3 +7,12 @@ export type TodosState = {
   form: FormGroup;
   currentPage: number;
 }
+
+export type newTodoDialogDTO = {
+  creator: string;
+  completed: boolean;
+  title: string;
+  editMode: boolean;
+  userId: number;
+  todoId: number;
+}
