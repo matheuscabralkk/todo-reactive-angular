@@ -1,0 +1,27 @@
+<div class="modal-header">
+  <h4 class="modal-title pull-left">Modal</h4>
+  <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="closeModal()">
+    <span aria-hidden="true" class="visually-hidden">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <ng-container *ngIf="state$ | async as state">
+    <tabset #staticTabs>
+      <tab heading="Albums" id="albums" (selectTab)="selectedTab($event)">
+        <ng-container *ngIf="albums$ | async">
+          {{state.albums | json}}
+        </ng-container>
+      </tab>
+      <tab heading="Todos" id="todos" (selectTab)="selectedTab($event)">
+        <ng-container *ngIf="todos$ | async">
+          {{state.todos | json}}
+        </ng-container>
+      </tab>
+      <tab heading="Posts" id="posts" (selectTab)="selectedTab($event)">
+        <ng-container *ngIf="posts$ | async">
+          {{state.posts | json}}
+        </ng-container>
+      </tab>
+    </tabset>
+  </ng-container>
+</div>

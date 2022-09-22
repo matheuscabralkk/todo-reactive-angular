@@ -7,10 +7,11 @@ import {HttpClientModule} from "@angular/common/http";
 import {TodosModule} from "./pages/todos/todos.module";
 import {ModalModule} from "ngx-bootstrap/modal";
 import {UsersModule} from "./pages/users/users.module";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,
@@ -18,7 +19,8 @@ import {UsersModule} from "./pages/users/users.module";
     HttpClientModule,
     ModalModule.forRoot(),
     TodosModule,
-    UsersModule
+    UsersModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

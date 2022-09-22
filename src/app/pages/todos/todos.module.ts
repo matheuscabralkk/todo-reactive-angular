@@ -15,7 +15,7 @@ import {TodoFormComponent} from "../../components/todo-form/todo-form.component"
     TodosComponent,
     CompletedPipe,
     TodoModalComponent,
-    TodoFormComponent
+    TodoFormComponent,
   ],
   imports: [
     CommonModule,

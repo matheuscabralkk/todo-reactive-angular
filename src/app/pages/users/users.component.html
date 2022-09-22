@@ -1,6 +1,6 @@
 <ng-template let-state [ngIf]="state$ | async">
   <div [formGroup]="state.form" style="display: grid; grid-template-columns: 200px auto; width: 100%;">
-    <button style="margin: 10px;" class="btn btn-primary" (click)="openModal()">create</button>
+    <button style="margin: 10px;" class="btn btn-primary" (click)="openEditModal()">create</button>
     <input style="margin: 10px;" type="text" class="form-control" placeholder="search" formControlName="search"/>
   </div>
   <table style="width: 100%;">
@@ -12,24 +12,43 @@
       <th>
         Name
       </th>
+      <th>
+        username
+      </th>
+      <th>
+        email
+      </th>
+      <th>
+        Ações
+      </th>
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let todo of state.pagedUsers" (click)="openModal(todo)">
+    <tr *ngFor="let user of state.pagedUsers">
       <td>
-        {{todo.id}}
+        {{user.id}}
       </td>
       <td>
-        {{todo.name}}
+        {{user.name}}
       </td>
       <td>
-        {{todo.username}}
+        {{user.username}}
       </td>
       <td>
-        {{todo.email}}
+        {{user.email}}
       </td>
       <td>
-        <button style="margin: 10px;" class="btn btn-primary" (click)="seeAddressModal()">See Address</button>
+        <div class="btn-group" dropdown>
+          <button id="button-basic" dropdownToggle type="button" class="btn btn-clear-wrapper dropdown-toggle"
+                  aria-controls="dropdown-basic">
+            ... <span class="caret"></span>
+          </button>
+          <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu"
+              role="menu" aria-labelledby="button-basic">
+            <li role="menuitem"><a class="dropdown-item"  (click)="openEditModal(user)">Editar</a></li>
+            <li role="menuitem"><a class="dropdown-item" (click)="openDetailsModal(user)">Detalhes</a></li>
+          </ul>
+        </div>
       </td>
     </tr>
     </tbody>

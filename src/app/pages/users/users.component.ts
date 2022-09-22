@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {Observable, take} from "rxjs";
 import {FormControl} from "@angular/forms";
 import {BsModalService} from "ngx-bootstrap/modal";
@@ -7,13 +7,15 @@ import {PageChangedEvent} from "ngx-bootstrap/pagination";
 import {UsersState, UsersStateService} from "./users-state.service";
 import {UserModalComponent} from "../../modals/user-modal/user-modal.component";
 import {NewUserDialogDTO} from "./types";
+import {UserDetailsModalComponent} from "../../modals/user-details-modal/user-details-modal.component";
 
 
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
-  providers: [UsersStateService]
+  providers: [UsersStateService],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UsersComponent implements OnInit {
   public state$!: Observable<UsersState>;
@@ -29,7 +31,11 @@ export class UsersComponent implements OnInit {
     this.state$ = this.usersStateService.state$;
   }
 
-  openModal(user?: User) {
+  openDetailsModal(user: User) {
+    this.modalService.show(UserDetailsModalComponent, {id: 3, class: 'modal-lg', initialState: {user}});
+  }
+
+  openEditModal(user?: User) {
     this.modalService.show(UserModalComponent, {id: 2, class: 'modal-lg', initialState: {user}});
     this.modalService.onHide.pipe(take(1))
       .subscribe((res?: unknown) => {
@@ -46,9 +52,5 @@ export class UsersComponent implements OnInit {
 
   get itemsPerPage(): number {
     return this.usersStateService.itemsPerPage;
-  }
-
-  seeAddressModal() {
-
   }
 }

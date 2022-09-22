@@ -7,7 +7,6 @@ import {PageChangedEvent} from "ngx-bootstrap/pagination";
 import {Todo} from "../../models/todo";
 import {BsModalRef, BsModalService} from "ngx-bootstrap/modal";
 import {TodoModalComponent} from "../../modals/todo-modal/todo-modal.component";
-import {NewUserDialogDTO} from "../users/types";
 
 @Component({
   selector: 'app-todos',
@@ -55,5 +54,4 @@ export class TodosComponent implements OnInit {
   get itemsPerPage(): number {
     return this.todosStateService.itemsPerPage;
   }
-
 }

@@ -7,12 +7,16 @@ import {UsersComponent} from "./users.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {UserFormComponent} from "../../components/user-form/user-form.component";
 import {PaginationModule} from "ngx-bootstrap/pagination";
+import {BsDropdownModule} from "ngx-bootstrap/dropdown";
+import {UserDetailsModalComponent} from "../../modals/user-details-modal/user-details-modal.component";
+import {TabsModule} from "ngx-bootstrap/tabs";
 
 @NgModule({
   declarations: [
     UsersComponent,
     UserModalComponent,
-    UserFormComponent
+    UserFormComponent,
+    UserDetailsModalComponent,
   ],
   imports: [
     CommonModule,
@@ -20,6 +24,8 @@ import {PaginationModule} from "ngx-bootstrap/pagination";
     ReactiveFormsModule,
     PaginationModule,
     FormsModule,
+    BsDropdownModule,
+    TabsModule,
   ]
 })
 export class UsersModule { }

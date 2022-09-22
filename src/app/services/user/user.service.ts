@@ -25,4 +25,16 @@ export class UserService {
   public getBySearch(str: string): Observable<User[]> {
     return this.httpClient.get<User[]>(`${this.baseUrl}?q=${str}`);
   }
+
+  getAlbums(userId: number) {
+    return this.httpClient.get<any>(`${this.baseUrl}${userId}/albums`);
+  }
+
+  getTodos(userId: number) {
+    return this.httpClient.get<any>(`${this.baseUrl}${userId}/todos`);
+  }
+
+  getPosts(userId: number) {
+    return this.httpClient.get<any>(`${this.baseUrl}${userId}/posts`);
+  }
 }
