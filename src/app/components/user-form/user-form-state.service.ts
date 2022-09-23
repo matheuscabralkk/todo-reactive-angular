@@ -1,11 +1,20 @@
 import { Injectable } from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {User} from "../../models/user";
+import {map, Observable, of, Subject, tap} from "rxjs";
+
+export interface UserFormState {
+  form: FormGroup;
+}
 
 @Injectable()
 export class UserFormStateService {
 
-  createUserForm = new FormGroup({
+  public state$: Observable<UserFormState>;
+
+  public formPatch$ = new Subject<User>();
+
+  private form = new FormGroup({
     name: new FormControl('', [
       Validators.required,
     ]),
@@ -35,20 +44,30 @@ export class UserFormStateService {
     ]),
   });
 
-  constructor() { }
+  constructor() {
+    this.state$ = of(this.form).pipe(
+      map((form) => ({
+        form
+      }))
+    );
+    this.formPatchWatcher().subscribe();
+  }
 
-  patchForm(user: User) {
-    this.createUserForm.patchValue({
-      name: user.name,
-      email: user.email,
-      username: user.username,
-      street: user.address.street,
-      suite: user.address.suite,
-      city: user.address.city,
-      zipcode: user.address.zipcode,
-      lat: user.address.geo.lat,
-      lng: user.address.geo.lng
-    });
-
+  private formPatchWatcher() {
+    return this.formPatch$.pipe(
+      tap((user) => {
+        this.form.patchValue({
+          name: user.name,
+          email: user.email,
+          username: user.username,
+          street: user.address.street,
+          suite: user.address.suite,
+          city: user.address.city,
+          zipcode: user.address.zipcode,
+          lat: user.address.geo.lat,
+          lng: user.address.geo.lng
+        });
+      })
+    )
   }
 }

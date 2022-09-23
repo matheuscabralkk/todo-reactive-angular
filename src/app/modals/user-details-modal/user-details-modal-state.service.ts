@@ -6,14 +6,10 @@ import {
   mergeMap,
   Observable,
   of,
-  Subject,
   switchMap,
   tap,
-  withLatestFrom
 } from "rxjs";
-import {TodosState} from "../../pages/todos/types";
 import {UserDetailsModalState} from "./user-details-modal.component";
-import {Todo} from "../../models/todo";
 import {UserService} from "../../services/user/user.service";
 import {User} from "../../models/user";
 

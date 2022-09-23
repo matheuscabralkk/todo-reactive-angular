@@ -3,8 +3,6 @@ import {User} from "../../models/user";
 import {BsModalService} from "ngx-bootstrap/modal";
 import {TabsetComponent} from "ngx-bootstrap/tabs";
 import {Observable} from "rxjs";
-import {TodosState} from "../../pages/todos/types";
-import {TodosStateService} from "../../pages/todos/todos-state.service";
 import {UserDetailsModalStateService} from "./user-details-modal-state.service";
 
 export interface UserDetailsModalState {

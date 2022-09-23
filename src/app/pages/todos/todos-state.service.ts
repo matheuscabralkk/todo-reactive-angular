@@ -6,15 +6,24 @@ import {
   map,
   mergeMap,
   Observable,
-  of, switchMap, take,
+  of, Subject, switchMap, take,
   tap,
   withLatestFrom
 } from "rxjs";
-import {NewTodoDialogDTO, TodosState} from "./types";
+import {NewTodoDialogDTO} from "./types";
 import {Todo} from "../../models/todo";
 import {TodoService} from "../../services/todo/todo.service";
 import {UserService} from "../../services/user/user.service";
 import {FormControl, FormGroup} from "@angular/forms";
+import {TodoModalComponent} from "../../modals/todo-modal/todo-modal.component";
+import {BsModalService} from "ngx-bootstrap/modal";
+
+export type TodosState = {
+  todos: Todo[];
+  pagedTodos: Todo[];
+  form: FormGroup;
+  currentPage: number;
+}
 
 @Injectable()
 export class TodosStateService {
@@ -29,6 +38,8 @@ export class TodosStateService {
 
   public pagedTodosSubject = new BehaviorSubject<Todo[]>([]);
 
+  public openEditModal$ = new Subject<Todo | undefined>();
+
   public form = new FormGroup({
     search: new FormControl('')
   })
@@ -37,7 +48,8 @@ export class TodosStateService {
 
   constructor(
     private readonly todosService: TodoService,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly modalService: BsModalService
   ) {
     this.state$ = combineLatest([this.todosSubject, this.pagedTodosSubject, this.currentPage$]).pipe(
       map(([todos, pagedTodos, currentPage]) => ({
@@ -47,6 +59,7 @@ export class TodosStateService {
         form: this.form
       }))
     );
+    this.openEditModal().subscribe();
     this.currentPageWatcher().subscribe()
     this.filterWatcher().subscribe()
 
@@ -57,6 +70,22 @@ export class TodosStateService {
         this.loading$.next(false);
       })
     ).subscribe();
+  }
+
+  openEditModal() {
+    return this.openEditModal$.pipe(
+      switchMap((todo) => {
+        this.modalService.show(TodoModalComponent, {id: 1, class: 'modal-lg', initialState: {todo}});
+        return this.modalService.onHide.pipe(take(1));
+      }),
+      withLatestFrom(this.todosSubject),
+      tap(([res, currentTodos]) => {
+          if (!!res && typeof res === 'string' && res.includes('creator')) {
+            const todoDTO: NewTodoDialogDTO = JSON.parse(res);
+            this.editTodos(todoDTO, currentTodos);
+          }
+        }
+      ))
   }
 
   public searchTodos(str: string): Observable<Todo[]> {
@@ -110,7 +139,7 @@ export class TodosStateService {
     )
   }
 
-  editTodos({title, completed, creator, editMode, todoId, userId}: NewTodoDialogDTO) {
+  private editTodos({title, completed, creator, editMode, todoId, userId}: NewTodoDialogDTO, todos: Todo[]) {
     const newTodo: Todo = {
       userId: userId,
       id: todoId,
@@ -121,22 +150,16 @@ export class TodosStateService {
         name: creator,
       }
     }
-
-    this.todosSubject.pipe(
-      take(1),
-      tap((todos) => {
-          if (!editMode) {
-            this.todosSubject.next([newTodo, ...todos]);
-            this.pagedTodosSubject.next([newTodo, ...todos]);
-            this.currentPage$.next(1);
-          } else {
-            const todoToEditIndex = todos.findIndex((todo) => todo.id === newTodo.id);
-            todos[todoToEditIndex] = newTodo;
-            this.todosSubject.next([...todos]);
-            this.pagedTodosSubject.next([...todos]);
-            this.currentPage$.next(1);
-          }
-        }
-      )).subscribe();
+    if (!editMode) {
+      this.todosSubject.next([newTodo, ...todos]);
+      this.pagedTodosSubject.next([newTodo, ...todos]);
+      this.currentPage$.next(1);
+    } else {
+      const todoToEditIndex = todos.findIndex((todo) => todo.id === newTodo.id);
+      todos[todoToEditIndex] = newTodo;
+      this.todosSubject.next([...todos]);
+      this.pagedTodosSubject.next([...todos]);
+      this.currentPage$.next(1);
+    }
   }
 }

@@ -9,17 +9,92 @@
     <tabset #staticTabs>
       <tab heading="Albums" id="albums" (selectTab)="selectedTab($event)">
         <ng-container *ngIf="albums$ | async">
-          {{state.albums | json}}
+          <table>
+            <thead>
+            <tr>
+              <th style="width: 50px">
+                Id
+              </th>
+              <th>
+                Title
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let todo of state.albums">
+              <td>
+                {{todo.id}}
+              </td>
+              <td>
+                {{todo.title}}
+              </td>
+            </tr>
+            </tbody>
+          </table>
         </ng-container>
       </tab>
       <tab heading="Todos" id="todos" (selectTab)="selectedTab($event)">
         <ng-container *ngIf="todos$ | async">
-          {{state.todos | json}}
+          <table>
+            <thead>
+            <tr>
+              <th style="width: 50px">
+                Id
+              </th>
+              <th>
+                Title
+              </th>
+              <th>
+                Completed
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let todo of state.todos">
+              <td>
+                {{todo.id}}
+              </td>
+              <td>
+                {{todo.title}}
+              </td>
+              <td>
+                {{todo.completed}}
+              </td>
+            </tr>
+            </tbody>
+          </table>
         </ng-container>
       </tab>
       <tab heading="Posts" id="posts" (selectTab)="selectedTab($event)">
         <ng-container *ngIf="posts$ | async">
-          {{state.posts | json}}
+          <table>
+            <thead>
+            <tr>
+              <th style="width: 50px">
+                Id
+              </th>
+              <th>
+                Title
+              </th>
+              <th>
+                Body
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let todo of state.posts">
+              <td>
+                {{todo.id}}
+              </td>
+              <td>
+                {{todo.title}}
+              </td>
+              <td>
+                {{todo.body}}
+              </td>
+            </tr>
+            </tbody>
+          </table>
         </ng-container>
       </tab>
     </tabset>

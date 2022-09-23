@@ -1,7 +1,6 @@
 import {ChangeDetectionStrategy, Component, OnInit, TemplateRef} from '@angular/core';
 import {map, Observable, of, switchMap, take, tap} from "rxjs";
-import {TodosStateService} from "./todos-state.service";
-import {NewTodoDialogDTO, TodosState} from "./types";
+import {TodosState, TodosStateService} from "./todos-state.service";
 import {FormControl} from "@angular/forms";
 import {PageChangedEvent} from "ngx-bootstrap/pagination";
 import {Todo} from "../../models/todo";
@@ -32,15 +31,7 @@ export class TodosComponent implements OnInit {
   }
 
   openModal(todo?: Todo) {
-    this.modalService.show(TodoModalComponent, {id: 1, class: 'modal-lg', initialState: {todo}});
-    this.modalService.onHide.pipe(take(1))
-      .subscribe((res?: unknown) => {
-        if (!!res && typeof res === 'string' && res.includes('creator')) {
-          const todoDTO: NewTodoDialogDTO = JSON.parse(res);
-          console.log(todoDTO);
-          this.todosStateService.editTodos(todoDTO);
-        }
-      });
+    this.todosStateService.openEditModal$.next(todo);
   }
 
   get isLoading() {

@@ -5,7 +5,7 @@ import {
   debounceTime,
   map,
   mergeMap,
-  Observable,
+  Observable, Subject,
   switchMap, take,
   tap,
   withLatestFrom
@@ -15,6 +15,8 @@ import {FormControl, FormGroup} from "@angular/forms";
 import {UserService} from "../../services/user/user.service";
 import {NewUserDialogDTO} from "./types";
 import {Address} from "../../models/address";
+import {BsModalService} from "ngx-bootstrap/modal";
+import {UserModalComponent} from "../../modals/user-modal/user-modal.component";
 
 export type UsersState = {
   users: User[];
@@ -34,6 +36,8 @@ export class UsersStateService {
 
   public pagedUsersSubject = new BehaviorSubject<User[]>([]);
 
+  public openEditModal$ = new Subject<User | undefined>();
+
   public form = new FormGroup({
     search: new FormControl('')
   })
@@ -42,6 +46,7 @@ export class UsersStateService {
 
   constructor(
     private readonly usersService: UserService,
+    private readonly modalService: BsModalService
   ) {
     this.state$ = combineLatest([this.usersSubject, this.pagedUsersSubject, this.currentPage$]).pipe(
       map(([users, pagedUsers, currentPage]) => ({
@@ -51,6 +56,7 @@ export class UsersStateService {
         form: this.form
       }))
     );
+    this.openEditModal().subscribe();
     this.currentPageWatcher().subscribe()
     this.filterWatcher().subscribe()
 
@@ -93,7 +99,25 @@ export class UsersStateService {
     )
   }
 
-  editUser({name, id, editMode, username, email, lng, lat, zipcode, suite, street, city}: NewUserDialogDTO) {
+  openEditModal() {
+    return this.openEditModal$.pipe(
+      switchMap((user) => {
+        this.modalService.show(UserModalComponent, {id: 2, class: 'modal-lg', initialState: {user}});
+        return this.modalService.onHide.pipe(take(1))
+      }),
+      withLatestFrom(this.usersSubject),
+      tap(([res, currentUsers]) => {
+          if (!!res && typeof res === 'string' && res.includes('name')) {
+            const userDto: NewUserDialogDTO = JSON.parse(res);
+            console.log('ok')
+
+            this.editUser(userDto, currentUsers);
+          }
+        }
+      ))
+  }
+
+  private editUser({name, id, editMode, username, email, lng, lat, zipcode, suite, street, city}: NewUserDialogDTO, users: User[]) {
     const address: Address = {
       geo: {
         lat,
@@ -106,21 +130,16 @@ export class UsersStateService {
     }
     const newUser = new User(id, name, username, email, address);
 
-    this.usersSubject.pipe(
-      take(1),
-      tap((users) => {
-          if (!editMode) {
-            this.usersSubject.next([newUser, ...users]);
-            this.pagedUsersSubject.next([newUser, ...users]);
-            this.currentPage$.next(1);
-          } else {
-            const userToEditIndex = users.findIndex((user) => user.id === newUser.id);
-            users[userToEditIndex] = newUser;
-            this.usersSubject.next([...users]);
-            this.pagedUsersSubject.next([...users]);
-            this.currentPage$.next(1);
-          }
-        }
-      )).subscribe();
+    if (!editMode) {
+      this.usersSubject.next([newUser, ...users]);
+      this.pagedUsersSubject.next([newUser, ...users]);
+      this.currentPage$.next(1);
+    } else {
+      const userToEditIndex = users.findIndex((user) => user.id === newUser.id);
+      users[userToEditIndex] = newUser;
+      this.usersSubject.next([...users]);
+      this.pagedUsersSubject.next([...users]);
+      this.currentPage$.next(1);
+    }
   }
 }

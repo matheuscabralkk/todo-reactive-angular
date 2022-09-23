@@ -1,12 +1,11 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormBuilder, FormGroup} from "@angular/forms";
-import {Todo} from "../../models/todo";
+import {FormGroup} from "@angular/forms";
 import {User} from "../../models/user";
-import {NewTodoDialogDTO} from "../../pages/todos/types";
 import {NewUserDialogDTO} from "../../pages/users/types";
-import {UserService} from "../../services/user/user.service";
 import {UserFormStateService} from "./user-form-state.service";
 import {BsModalService} from "ngx-bootstrap/modal";
+import {Observable} from "rxjs";
+import {TodoFormState} from "../todo-form/todo-form-state.service";
 
 @Component({
   selector: 'app-user-form',
@@ -20,31 +19,26 @@ export class UserFormComponent implements OnInit {
 
   @Output() outputEvent = new EventEmitter<NewUserDialogDTO>();
 
+  public state$?: Observable<TodoFormState>;
+
   constructor(
     private userFormStateService: UserFormStateService,
-    private modalService: BsModalService,
   ) { }
 
   ngOnInit(): void {
+    this.state$ = this.userFormStateService.state$;
     if (this.user) {
-      this.userFormStateService.patchForm(this.user);
+      this.userFormStateService.formPatch$.next(this.user);
     }
   }
 
-  get getForm(): FormGroup {
-    return this.userFormStateService.createUserForm;
-  }
-
-
-  onSubmit() {
+  onSubmit(form: FormGroup) {
     const randomId = Math.floor(Math.random() * 100000) + 200;
-    const newUserDTO: NewUserDialogDTO = {
+    this.outputEvent.emit({
       editMode: !!this.user,
       id: this.user?.id || randomId,
-      ...this.getForm.value
-    };
-    this.modalService.setDismissReason(JSON.stringify(newUserDTO));
-    this.getForm.reset();
-    this.modalService.hide();
+      ...form.value
+    });
+    form.reset();
   }
 }

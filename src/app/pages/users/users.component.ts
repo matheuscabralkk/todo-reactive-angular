@@ -35,22 +35,15 @@ export class UsersComponent implements OnInit {
     this.modalService.show(UserDetailsModalComponent, {id: 3, class: 'modal-lg', initialState: {user}});
   }
 
-  openEditModal(user?: User) {
-    this.modalService.show(UserModalComponent, {id: 2, class: 'modal-lg', initialState: {user}});
-    this.modalService.onHide.pipe(take(1))
-      .subscribe((res?: unknown) => {
-        if (!!res && typeof res === 'string' && res.includes('name')) {
-          const userDTO: NewUserDialogDTO = JSON.parse(res);
-          this.usersStateService.editUser(userDTO);
-        }
-      });
-  }
-
   pageChanged($event: PageChangedEvent) {
     this.usersStateService.currentPage$.next($event.page);
   }
 
   get itemsPerPage(): number {
     return this.usersStateService.itemsPerPage;
+  }
+
+  openEditModal(user?: User) {
+    this.usersStateService.openEditModal$.next(user);
   }
 }
